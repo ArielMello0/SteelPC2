@@ -23,16 +23,20 @@ def crearFormBlog(request):
         form=BlogForm(request.POST)
         if form.is_valid():
             informacion=form.cleaned_data
-            print(informacion)
             titulo=informacion["titulo"]
+            subtitulo=informacion["subtitulo"]
             num_blog=informacion["num_blog"]
-            blog=Blog(titulo=titulo, num_blog=num_blog)
+            cuerpo=informacion["cuerpo"]
+            autor=informacion["autor"]
+            fecha=informacion["fecha"]
+           
+            blog=Blog(titulo=titulo,subtitulo=subtitulo,num_blog=num_blog,cuerpo=cuerpo,autor=autor,fecha=fecha)
             blog.save()
-            return render (request, "AppProyecto/inicio.html")
-    
+            blogs=Blog.objects.all()
+        return render (request,"AppProyecto/leerBlog.html", {"blogs":blogs})
     else:
         formulario=BlogForm()
-        return render (request, "AppProyecto/crearFormBlog.html", {"formulario":formulario})
+    return render (request, "AppProyecto/crearFormBlog.html", {"formulario":formulario})
 
 @login_required
 def leerBlog(request):
@@ -44,7 +48,7 @@ def eliminarBlog(request, id):
     blog=Blog.objects.get(id=id)
     blog.delete()
     blogs=Blog.objects.all()
-    return render(request, "AppProyecto/leerBlog.html",{"blogs":blogs})
+    return render(request, "AppProyecto/leerBlog.html",{"blog":blog})
 
 @login_required
 def editarBlog(request, id):
@@ -54,15 +58,20 @@ def editarBlog(request, id):
         if form.is_valid():
             informacion=form.cleaned_data
             blog.titulo=informacion["titulo"]
+            blog.subtitulo=informacion["subtitulo"]
             blog.num_blog=informacion["num_blog"]
+            blog.cuerpo=informacion["cuerpo"]
+            blog.autor=informacion["autor"]
+            blog.fecha=informacion["fecha"]
+            
             blog.save()
             blogs=Blog.objects.all()
-            return render(request, "AppProyecto/leerBlog.html",{"blogs":blogs})
+        return render(request, "AppProyecto/leerBlog.html",{"blogs":blogs})
         
     else:
-        form=BlogForm(initial={"titulo":blog.titulo, "num_blog":blog.num_blog})
-        return render(request, "AppProyecto/editarBlog.html",{"formulario":form, "blog":blog})
-
+        form=BlogForm(initial={"titulo":blog.titulo,"subtitulo":blog.subtitulo,"num_blog":blog.num_blog,"cuerpo":blog.cuerpo,"autor":blog.autor,"fecha":blog.fecha})
+    return render(request, "AppProyecto/editarBlog.html",{"formulario":form, "blog":blog})
+    
 
 @login_required
 def autorFormulario(request):
@@ -81,11 +90,11 @@ def crearFormAutor (request):
             autor=Autor(nombre=nombre, apellido=apellido, email=email, profesion=profesion)
             autor.save()
             autores=Autor.objects.all()
-            return render(request, "AppProyecto/leerAutor.html", {"autores":autores})
+        return render(request, "AppProyecto/leerAutor.html", {"autores":autores})
     
     else:
         formulario=AutorForm()
-        return render (request, "AppProyecto/crearFormAutor.html", {"formulario":formulario})
+    return render (request, "AppProyecto/crearFormAutor.html", {"formulario":formulario})
 
 @login_required
 def leerAutor(request):
@@ -134,11 +143,11 @@ def crearFormSuscriptor(request):
             email=informacion["email"]
             suscriptor=Suscriptor(nombre=nombre, apellido=apellido, email=email)
             suscriptor.save()
-            return render (request, "AppProyecto/inicio.html")
+        return render (request, "AppProyecto/inicio.html")
     
     else:
         formulario=SuscriptorForm()
-        return render (request, "AppProyecto/crearFormSuscriptor.html", {"formulario":formulario})
+    return render (request, "AppProyecto/crearFormSuscriptor.html", {"formulario":formulario})
 
 
 
@@ -168,29 +177,12 @@ def editarSuscriptor(request, id):
             suscriptor.email=informacion["email"]
             suscriptor.save()
             suscriptores=Suscriptor.objects.all()
-            return render(request, "AppProyecto/leerSuscriptor.html",{"suscriptores":suscriptores}) 
+        return render(request, "AppProyecto/leerSuscriptor.html",{"suscriptores":suscriptores}) 
     else:
         form=SuscriptorForm(initial={"nombre":suscriptor.nombre, "apellido":suscriptor.apellido, "email":suscriptor.email})
         return render(request,"AppProyecto/editarSuscriptor.html",{"formulario":form, "suscriptor":suscriptor})
         
 
-
-
-
-###################################busquedassss
-
-def busquedaNumBlog(request):
-    return render(request,"AppProyecto/busquedaNumBlog.html")
-
-def buscar(request):
-    if request.GET["num_blog"]:
-        num_blog=request.GET["num_blog"]
-        blogs=Blog.objects.filter(num_blog=num_blog)
-        return render(request, "AppProyecto/resultadosBusqueda.html", {"blogs":blog})
-    else:
-        return render(request, "AppProyecto/busquedaNumBlog.html", {"mensaje":"Ingrese un número de blog"})
-
-#Vista para login
 
 def login_request(request):
     if request.method=="POST":

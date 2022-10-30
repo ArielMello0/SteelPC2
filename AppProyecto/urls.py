@@ -14,11 +14,6 @@ urlpatterns = [
     path('agregarAvatar/', agregarAvatar, name="agregarAvatar"),
 
 
-    
-    path('busquedaNumBlog/', busquedaNumBlog, name="busquedaNumBlog"),
-    path('buscar/', buscar, name="buscar"),
-
-
     path('autorFormulario/', autorFormulario, name="autorFormulario"),
     path('crearFormAutor/', crearFormAutor, name="crearFormAutor"),
     path('leerAutor/', leerAutor, name="leerAutor"),
@@ -38,7 +33,4 @@ urlpatterns = [
     path('leerBlog/', leerBlog, name="leerBlog"),
     path('editarBlog/<id>', editarBlog, name="editarBlog"),
     
-
-
-
 ]
