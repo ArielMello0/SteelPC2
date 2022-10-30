@@ -35,13 +35,15 @@ class UserRegisterForm(UserCreationForm):
    
 
 class UserEditForm(UserCreationForm):
-    email=forms.EmailField()
+    username=forms.CharField(label='Modificar Usuario')
+    email=forms.EmailField(label='Modificar Email')
     password1=forms.CharField(label="Ingrese Contraseña", widget=forms.PasswordInput)
     password2=forms.CharField(label="Repetir Contraseña", widget=forms.PasswordInput)
-
+    
+    
     class Meta:
         model = User
-        fields = ['email', 'password1', 'password2']
+        fields = ['username','email', 'password1', 'password2']
         help_texts = {k:"" for k in fields}
    
 class AvatarForm(forms.Form):

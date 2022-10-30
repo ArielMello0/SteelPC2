@@ -9,9 +9,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required
+
 def inicio(request):
-    return render (request,"AppProyecto/inicio.html" ,{"avatar":obtenerAvatar(request)})
+    return render (request,"AppProyecto/inicio.html")
 
 @login_required
 def blogFormulario(request):
@@ -36,7 +36,7 @@ def crearFormBlog(request):
         return render (request,"AppProyecto/leerBlog.html", {"blogs":blogs})
     else:
         formulario=BlogForm()
-    return render (request, "AppProyecto/crearFormBlog.html", {"formulario":formulario})
+    return render (request, "AppProyecto/crearFormBlog.html", {"formulario":formulario,"avatar":obtenerAvatar(request)})
 
 @login_required
 def leerBlog(request):
@@ -127,7 +127,6 @@ def editarAutor(request, id):
         form=AutorForm(initial={"nombre":autor.nombre, "apellido":autor.apellido, "email":autor.email, "profesion":autor.profesion})
         return render(request, "AppProyecto/editarAutor.html",{"formulario":form, "autor":autor})
         
-
 @login_required
 def suscriptorFormulario(request):
     return render(request, "AppProyecto/suscriptorFormulario.html",{"avatar":obtenerAvatar(request)})
@@ -148,7 +147,6 @@ def crearFormSuscriptor(request):
     else:
         formulario=SuscriptorForm()
     return render (request, "AppProyecto/crearFormSuscriptor.html", {"formulario":formulario})
-
 
 
 @login_required
@@ -227,16 +225,16 @@ def editarPerfil(request):
         if form.is_valid():
             info=form.cleaned_data
             usuario.email=info["email"]
-            usuario.password1=info["password1"]
-            usuario.password2=info["password2"]
+            usuario.username=info["username"]
             usuario.save()
             return render(request, "AppProyecto/inicio.html", {"mensaje":"Perfil editado correctamente"})
         else:
             return render(request, "AppProyecto/editarPerfil.html", {"formulario":form, "usuario":usuario,"mensaje":"Formulario inválido"})
     else:
         form= UserEditForm(instance=usuario)
-    return render(request, "AppProyecto/editarPerfil.html", {"formulario":form, "usuario":usuario})
+    return render(request, "AppProyecto/editarPerfil.html", {"formulario":form, "usuario":usuario, "avatar":obtenerAvatar(request)})
 ##################################
+
 @login_required
 def agregarAvatar(request):
     if request.method=='POST':
@@ -253,10 +251,10 @@ def agregarAvatar(request):
 
     else:
         formulario=AvatarForm()
-        return render(request, "AppProyecto/agregar.html", {"formulario":formulario, "usuario":request.user})
+        return render(request, "AppProyecto/agregarAvatar.html", {"formulario":formulario, "usuario":request.user,"avatar":obtenerAvatar(request)})
 
 
-@login_required
+
 def obtenerAvatar(request):
     lista=Avatar.objects.filter(user=request.user)
     if len(lista)!=0:
